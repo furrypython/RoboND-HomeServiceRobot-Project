@@ -58,7 +58,7 @@ int main(int argc, char** argv){
   if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED)
     ROS_INFO("Hooray, reached the drop off zone.");
   else
-    ROS_INFO("The base failed to reache the drop off zone for some reason");
+    ROS_INFO("The base failed to reach the drop off zone for some reason");
 
   return 0;
 }
