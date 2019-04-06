@@ -49,12 +49,9 @@ int main( int argc, char** argv )
     marker.color.b = 0.0f;
     marker.color.a = 1.0;
 
-// %Tag(LIFETIME)%
     marker.lifetime = ros::Duration();
-// %EndTag(LIFETIME)%
 
     // Publish the marker
-// %Tag(PUBLISH)%
     while (marker_pub.getNumSubscribers() < 1)
     {
       if (!ros::ok())
@@ -65,10 +62,8 @@ int main( int argc, char** argv )
       sleep(1);
     }
     marker_pub.publish(marker);
-// %EndTag(PUBLISH)%
 
     // Cycle between different shapes
-// %Tag(CYCLE_SHAPES)%
     switch (shape)
     {
     case visualization_msgs::Marker::CUBE:
@@ -84,11 +79,7 @@ int main( int argc, char** argv )
       shape = visualization_msgs::Marker::CUBE;
       break;
     }
-// %EndTag(CYCLE_SHAPES)%
 
-// %Tag(SLEEP_END)%
     r.sleep();
   }
-// %EndTag(SLEEP_END)%
 }
-// %EndTag(FULLTEXT)%
