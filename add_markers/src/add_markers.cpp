@@ -1,10 +1,9 @@
-
 #include <ros/ros.h>
 #include <visualization_msgs/Marker.h>
 
 int main( int argc, char** argv )
 {
-  ros::init(argc, argv, "add_markers");
+  ros::init(argc, argv, "basic_shapes");
   ros::NodeHandle n;
   ros::Rate r(1);
   ros::Publisher marker_pub = n.advertise<visualization_msgs::Marker>("visualization_marker", 1);
@@ -16,12 +15,12 @@ int main( int argc, char** argv )
   {
     visualization_msgs::Marker marker;
     // Set the frame ID and timestamp.  See the TF tutorials for information on these.
-    marker.header.frame_id = "map";
+    marker.header.frame_id = "/my_frame";
     marker.header.stamp = ros::Time::now();
 
     // Set the namespace and id for this marker.  This serves to create a unique ID
     // Any marker sent with the same namespace and id will overwrite the old one
-    marker.ns = "add_markers";
+    marker.ns = "basic_shapes";
     marker.id = 0;
 
     // Set the marker type.  Initially this is CUBE, and cycles between that and SPHERE, ARROW, and CYLINDER
@@ -38,7 +37,7 @@ int main( int argc, char** argv )
     marker.pose.orientation.y = 0.0;
     marker.pose.orientation.z = 0.0;
     marker.pose.orientation.w = 1.0;
-
+    
     // Set the scale of the marker -- 1x1x1 here means 1m on a side
     marker.scale.x = 1.0;
     marker.scale.y = 1.0;
@@ -50,9 +49,12 @@ int main( int argc, char** argv )
     marker.color.b = 0.0f;
     marker.color.a = 1.0;
 
+// %Tag(LIFETIME)%
     marker.lifetime = ros::Duration();
+// %EndTag(LIFETIME)%
 
     // Publish the marker
+// %Tag(PUBLISH)%
     while (marker_pub.getNumSubscribers() < 1)
     {
       if (!ros::ok())
@@ -63,8 +65,10 @@ int main( int argc, char** argv )
       sleep(1);
     }
     marker_pub.publish(marker);
+// %EndTag(PUBLISH)%
 
     // Cycle between different shapes
+// %Tag(CYCLE_SHAPES)%
     switch (shape)
     {
     case visualization_msgs::Marker::CUBE:
@@ -80,7 +84,11 @@ int main( int argc, char** argv )
       shape = visualization_msgs::Marker::CUBE;
       break;
     }
+// %EndTag(CYCLE_SHAPES)%
 
+// %Tag(SLEEP_END)%
     r.sleep();
   }
+// %EndTag(SLEEP_END)%
 }
+// %EndTag(FULLTEXT)%
