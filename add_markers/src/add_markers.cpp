@@ -30,8 +30,8 @@ int main( int argc, char** argv )
     marker.action = visualization_msgs::Marker::ADD;
 
     // Set the pose of the marker.  This is a full 6DOF pose relative to the frame/time specified in the header
-    marker.pose.position.x = 0;
-    marker.pose.position.y = 0;
+    marker.pose.position.x = -0.488;
+    marker.pose.position.y = -4.103;
     marker.pose.position.z = 0;
     marker.pose.orientation.x = 0.0;
     marker.pose.orientation.y = 0.0;
@@ -62,6 +62,17 @@ int main( int argc, char** argv )
       sleep(1);
     }
     marker_pub.publish(marker);
+    
+    // Pause 5 seconds
+    ros::Duration(5.0).sleep();
+    
+    // Hide the marker
+    marker.action = visualization_msgs::Marker::DELETE;
+    
+    // Pause 5 seconds
+    ros::Duration(5.0).sleep();
+    
+    
 
     // Cycle between different shapes
     switch (shape)
