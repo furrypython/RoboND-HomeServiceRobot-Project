@@ -31,7 +31,7 @@ void sendAndCheck(MoveBaseClient& ac, move_base_msgs::MoveBaseGoal goal, std::st
   if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED){
     ROS_INFO_STREAM("Hooray, reached the " << target << " zone!");
   } else {
-    ROS_INFO_STREAM("Failed to reach the " << target << " zone!");
+    ROS_INFO_STREAM("Failed to reach the " << target << " zone.");
   }
 }
 
@@ -43,13 +43,13 @@ int main(int argc, char** argv){
   MoveBaseClient ac("move_base", true);
 
   // Wait infinite time for move_base action server to come up
-  while(!ac.waitForServer()){
+  while(!ac.waitForServer(ros::Duration(5.0))){
       ROS_INFO("Waiting for the move_base action server to come up");
   };
   ROS_INFO("Action server started");
 
   // Define the 1st position and orientation for the robot to reach
-  move_base_msgs::MoveBaseGoal pickGoal = setGoal(3.0, -1.5, 1.0);
+  move_base_msgs::MoveBaseGoal pickGoal = setGoal(-0.488, -4.103, 1.0);
 
   // Send the goal position and orientation for the robot to reach
   sendAndCheck(ac, pickGoal, "pickup");
@@ -58,7 +58,7 @@ int main(int argc, char** argv){
   ros::Duration(5.0).sleep();
 
   // Define the 2nd position and orientation for the robot to reach
-  move_base_msgs::MoveBaseGoal dropGoal = setGoal(5.0, 1.0, 1.0);
+  move_base_msgs::MoveBaseGoal dropGoal = setGoal(5.281, -2.463, -1.0);
 
   // Send the goal position and orientation for the robot to reach
   sendAndCheck(ac, dropGoal, "drop off");
