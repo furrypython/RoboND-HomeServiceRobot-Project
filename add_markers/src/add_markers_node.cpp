@@ -44,7 +44,7 @@ int main( int argc, char** argv )
     marker.scale.z = 1.0;
 
     // Set the color -- be sure to set alpha to something non-zero!
-    marker.color.r = 0.0f;
+    marker.color.r = 0.913f;
     marker.color.g = 1.0f;
     marker.color.b = 0.0f;
     marker.color.a = 1.0;
