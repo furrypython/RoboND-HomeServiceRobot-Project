@@ -8,6 +8,7 @@ typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseCl
 
 move_base_msgs::MoveBaseGoal setGoal(double poseX, double poseY, double poseW){
   move_base_msgs::MoveBaseGoal goal;  
+  
   // set up the frame parameters
   goal.target_pose.header.frame_id = "map";
   goal.target_pose.header.stamp = ros::Time::now();
