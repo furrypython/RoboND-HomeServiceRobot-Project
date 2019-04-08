@@ -55,9 +55,6 @@ void waitSub(ros::Publisher& marker_pub){
 }
 
 void setPose(visualization_msgs::Marker& marker, pose& goal){
-  // Set the marker action. 
-  marker.action = visualization_msgs::Marker::ADD;
-
   // Set the epose of the marker
   marker.pose.position.x = goal.x;
   marker.pose.position.y = goal.y;
@@ -69,8 +66,15 @@ void setPose(visualization_msgs::Marker& marker, pose& goal){
 }
 
 void odomCallback(){
-  
-  
+  bool reach = false;
+  double robotPoseX = odom.pose.position.x;
+  double robotPoseY = odom.pose.position.y;
+  double diff = 0.00001;
+  double dx = abs(robotPoseX - pickup.x);
+  double dy = abs(robotPoseY - pickup.y);
+  if(dx < diff && dy < diff){
+      bool reach = true;
+  }
 }
 
 int main( int argc, char** argv ){
@@ -91,6 +95,7 @@ int main( int argc, char** argv ){
 
   // Publish the marker at the pickup zone
   setPose(marker, pickup);
+  marker.action = visualization_msgs::Marker::ADD;
   marker_pub.publish(marker);
 
   // Pause 5 seconds
@@ -106,8 +111,7 @@ int main( int argc, char** argv ){
 
   // Publish the marker at the dropoff zone
   setPose(marker, dropoff);
-
-  // Publish the marker
+  marker.action = visualization_msgs::Marker::ADD;
   marker_pub.publish(marker);
 
   ROS_INFO("Marker reached the dropoff zone");
