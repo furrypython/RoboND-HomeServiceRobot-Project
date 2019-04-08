@@ -65,16 +65,27 @@ void setPose(visualization_msgs::Marker& marker, pose& goal){
   marker.pose.orientation.w = goal.ow;
 }
 
-void odomCallback(){
-  bool reach = false;
+void odomCallback(nav_msgs::Odometry& odom){
+  bool reachPickup = false;
+  bool reachDropoff = false;
+  
   double robotPoseX = odom.pose.position.x;
   double robotPoseY = odom.pose.position.y;
   double diff = 0.00001;
-  double dx = abs(robotPoseX - pickup.x);
-  double dy = abs(robotPoseY - pickup.y);
-  if(dx < diff && dy < diff){
-      bool reach = true;
+  
+  double dpx = abs(robotPoseX - pickup.x);
+  double dpy = abs(robotPoseY - pickup.y);
+  if(!reachPickup && dpx < diff && dpy < diff){
+      ROS_INFO("Reached the pickup zone");
+      reachPickup = true;
   }
+  
+  double ddx = abs(robotPoseX - dropoff.x);
+  double ddy = abs(robotPoseY - dropoff.y);
+  if(!reachDropoff && ddx < diff && ddy < diff){
+      ROS_INFO("Reached the dropoff zone");
+      reachDropoff = true;
+  }  
 }
 
 int main( int argc, char** argv ){
