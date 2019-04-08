@@ -15,6 +15,9 @@ struct pose{
 pose pickup = {-0.488, -4.103, 0.0, 0.0, 0.0, 1.0};
 pose dropoff = {5.281, -2.463, 0.0, 0.0, 0.0, 1.0};
 
+bool reachPickup = false;
+bool reachDropoff = false;
+
 void setMarker(visualization_msgs::Marker& marker)
 {
   // Set the initial shape type to be a cube
@@ -66,8 +69,7 @@ void setPose(visualization_msgs::Marker& marker, pose& goal){
 }
 
 void odomCallback(nav_msgs::Odometry& odom){
-  bool reachPickup = false;
-  bool reachDropoff = false;
+
   
   double robotPoseX = odom.pose.position.x;
   double robotPoseY = odom.pose.position.y;
@@ -104,22 +106,39 @@ int main( int argc, char** argv ){
   setMarker(marker);
   waitSub(marker_pub);
 
+  // -----------------------------------------------------------
   // Publish the marker at the pickup zone
   setPose(marker, pickup);
   marker.action = visualization_msgs::Marker::ADD;
   marker_pub.publish(marker);
 
+  // Check if reach the pickup zone
+  while(!reachPickup){
+      ros::spin();
+      sleep(1);
+  }
+  
+  // Picking...
   // Pause 5 seconds
   ros::Duration(5.0).sleep();
-
+  
+  // ----------------------------------------------------------
   // Hide the marker
   marker.action = visualization_msgs::Marker::DELETE;
   marker_pub.publish(marker);
   ROS_INFO("Marker picked");
-
+  
+  // Check if reach the dropoff zone
+  while(!reachDropoff){
+      ros::spin();
+      sleep(1);
+  }
+  
+  // Dropping... 
   // Pause 5 seconds
   ros::Duration(5.0).sleep();
-
+  
+  // ----------------------------------------------------------
   // Publish the marker at the dropoff zone
   setPose(marker, dropoff);
   marker.action = visualization_msgs::Marker::ADD;
