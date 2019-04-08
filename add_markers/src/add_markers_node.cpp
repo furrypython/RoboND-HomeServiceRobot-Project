@@ -12,7 +12,7 @@ struct pose{
 };
 
 pose pickup = {-0.488, -4.103, 0.0, 0.0, 0.0, 1.0};
-pose dropoff = {5.281, -2.463, 0.0, 0.0, 0.0, -1.0};
+pose dropoff = {5.281, -2.463, 0.0, 0.0, 0.0, 1.0};
 
 void setMarker(visualization_msgs::Marker& marker)
 {
@@ -68,12 +68,17 @@ void setPose(visualization_msgs::Marker& marker, pose& goal){
   marker.pose.orientation.w = goal.ow;
 }
 
+void odomCallback(){
+  
+}
+
 int main( int argc, char** argv )
 {
   ros::init(argc, argv, "add_markers");
   ros::NodeHandle n;
   ros::Rate r(1);
   ros::Publisher marker_pub = n.advertise<visualization_msgs::Marker>("visualization_marker", 1);
+  ros::Subscriber odom_pub = n.subscribe("odom", 10, odomCallback);
 
   if (!ros::ok())
   {
