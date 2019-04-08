@@ -16,7 +16,7 @@ pose dropoff = {5.281, -2.463, 0.0, 0.0, 0.0, 1.0};
 
 void setMarker(visualization_msgs::Marker& marker)
 {
-  // Set our initial shape type to be a cube
+  // Set the initial shape type to be a cube
   uint32_t shape = visualization_msgs::Marker::CUBE;
 
   // Set the marker type.
@@ -48,7 +48,6 @@ void waitSub(ros::Publisher& marker_pub){
   // Sleep until a subscriber is ready
   while (marker_pub.getNumSubscribers() < 1)
   {
-
     ROS_WARN_ONCE("Please create a subscriber to the marker");
     sleep(1);
   }
@@ -72,16 +71,14 @@ void odomCallback(){
   
 }
 
-int main( int argc, char** argv )
-{
+int main( int argc, char** argv ){
   ros::init(argc, argv, "add_markers");
   ros::NodeHandle n;
   ros::Rate r(1);
   ros::Publisher marker_pub = n.advertise<visualization_msgs::Marker>("visualization_marker", 1);
   ros::Subscriber odom_pub = n.subscribe("odom", 10, odomCallback);
 
-  if (!ros::ok())
-  {
+  if (!ros::ok()) {
     return 0;
   }
 
