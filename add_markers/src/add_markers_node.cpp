@@ -1,5 +1,6 @@
 #include <ros/ros.h>
 #include <visualization_msgs/Marker.h>
+#include <nav_msgs/Odometry.h>
 
 struct pose{
   float x;
@@ -68,6 +69,7 @@ void setPose(visualization_msgs::Marker& marker, pose& goal){
 }
 
 void odomCallback(){
+  
   
 }
 
