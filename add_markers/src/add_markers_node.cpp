@@ -62,6 +62,11 @@ int main( int argc, char** argv )
       sleep(1);
     }
     marker_pub.publish(marker);
+    
+    // Wait 5 seconds
+    ros::Duration(5.0).sleep();
+    
+    
 
     // Cycle between different shapes
     switch (shape)
