@@ -6,7 +6,7 @@
 // Define a client for to send goal requests to the move_base server through a SimpleActionClient
 typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseClient;
 
-move_base_msgs::MoveBaseGoal setGoal(double poseX, double poseY, double poseW){
+move_base_msgs::MoveBaseGoal setGoal(double posX, double posY, double oriW){
   move_base_msgs::MoveBaseGoal goal;  
   
   // set up the frame parameters
@@ -14,9 +14,9 @@ move_base_msgs::MoveBaseGoal setGoal(double poseX, double poseY, double poseW){
   goal.target_pose.header.stamp = ros::Time::now();
 
   // Define the 1st position and orientation for the robot to reach
-  goal.target_pose.pose.position.x = poseX;
-  goal.target_pose.pose.position.y = poseY;
-  goal.target_pose.pose.orientation.w = poseW;
+  goal.target_pose.pose.position.x = posX;
+  goal.target_pose.pose.position.y = posY;
+  goal.target_pose.pose.orientation.w = oriW;
 
   return goal;
 }
