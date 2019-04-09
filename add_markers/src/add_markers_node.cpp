@@ -3,13 +3,6 @@
 #include <nav_msgs/Odometry.h>
 
 class addMarkers{
-private:
-  ros::NodeHandle n;
-  ros::Publisher marker_pub;
-  ros::Subscriber odom_pub;
-  bool reachPickup = false;
-  bool reachDropoff = false;
-  
 public:
   addMarkers(){
     marker_pub = n.advertise<visualization_msgs::Marker>("visualization_marker", 1);
@@ -80,7 +73,13 @@ public:
       reachDropoff = true;
     }  
   }
-
+  
+private:
+  ros::NodeHandle n;
+  ros::Publisher marker_pub;
+  ros::Subscriber odom_pub;
+  bool reachPickup = false;
+  bool reachDropoff = false;
 };
 
 int main( int argc, char** argv ){
