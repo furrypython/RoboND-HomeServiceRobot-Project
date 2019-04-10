@@ -8,7 +8,7 @@ public:
         //Topic to publish
         marker_pub = n.advertise<visualization_msgs::Marker>("visualization_marker", 1);
         // Subscribe to odom topic
-        odom_pub = n.subscribe("odom", 10, addMarkers::odomCallback, this);
+        odom_pub = n.subscribe("odom", 10, &addMarkers::odomCallback, this);
     }
   
     void waitSub(){
@@ -52,14 +52,13 @@ public:
         marker.color.a = 1.0;
 
         marker.lifetime = ros::Duration();
-        publishMarker();
     }
     
     void setPose(double posX, double posY){
         // Set the pose of the marker
         marker.pose.position.x = posX;
         marker.pose.position.y = posY;
-        marker.pose.position.z = 0.0
+        marker.pose.position.z = 0.0;
         marker.pose.orientation.x = 0.0;
         marker.pose.orientation.y = 0.0;
         marker.pose.orientation.z = 0.0;
@@ -67,8 +66,8 @@ public:
     }
     
     void odomCallback(const nav_msgs::Odometry& odom){
-        double robotPosX = odom.pose.position.x;
-        double robotPosY = odom.pose.position.y;
+        double robotPosX = odom.pose.pose.position.x;
+        double robotPosY = odom.pose.pose.position.y;
         double diff = 0.00001;  
         double dpx = abs(robotPosX - pickup[0]);
         double dpy = abs(robotPosY - pickup[1]);
@@ -111,7 +110,7 @@ private:
   ros::NodeHandle n;
   ros::Publisher marker_pub;
   ros::Subscriber odom_pub;
-  visualization_msgs::Marker marker
+  visualization_msgs::Marker marker;
   bool reachPickup = false;
   bool reachDropoff = false;
   double pickup[2] = {-0.488, -4.103};
