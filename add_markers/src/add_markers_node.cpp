@@ -56,7 +56,7 @@ public:
         marker.pose.orientation.w = 1.0;
     }
     
-    void publishMarker()
+    void publishMarker(){
         // Sleep till a subscriber is ready and then publish the marker.
         while (marker_pub.getNumSubscribers() < 1){
             ROS_WARN_ONCE("Please create a subscriber to the marker");
@@ -75,7 +75,6 @@ public:
         double ddy = abs(robotPosY - dropoff[1]);
  
         setPose(pickup[0], pickup[1]);
-        waitSub();
         marker_pub.publish(marker);
         
         // Check if reach the pickup zone
