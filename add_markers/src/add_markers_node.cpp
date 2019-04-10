@@ -42,7 +42,13 @@ public:
         marker.color.a = 1.0;
 
         marker.lifetime = ros::Duration();
-        publishMarker();
+        
+        // Sleep till a subscriber is ready and then publish the marker.
+        while (marker_pub.getNumSubscribers() < 1){
+            ROS_WARN_ONCE("Please create a subscriber to the marker");
+            sleep(1);
+        }
+        marker_pub.publish(marker);
     }
     
     void setPose(double posX, double posY){
@@ -56,15 +62,6 @@ public:
         marker.pose.orientation.w = 1.0;
     }
     
-    void publishMarker(){
-        // Sleep till a subscriber is ready and then publish the marker.
-        while (marker_pub.getNumSubscribers() < 1){
-            ROS_WARN_ONCE("Please create a subscriber to the marker");
-            sleep(1);
-        }
-        marker_pub.publish(marker);
-    }
-    
     void odomCallback(const nav_msgs::Odometry& odom){
         double robotPosX = odom.pose.pose.position.x;
         double robotPosY = odom.pose.pose.position.y;
@@ -72,23 +69,19 @@ public:
         double dpx = abs(robotPosX - pickup[0]);
         double dpy = abs(robotPosY - pickup[1]);
         double ddx = abs(robotPosX - dropoff[0]);
-        double ddy = abs(robotPosY - dropoff[1]);
- 
-        setPose(pickup[0], pickup[1]);
-        marker_pub.publish(marker);
+        double ddy = abs(robotPosY - dropoff[1]);      
         
-        // Check if reach the pickup zone
         while(!reachPickup){
+            // Check if reach the pickup zone
             if(!reachPickup && dpx < diff && dpy < diff){
                 ROS_INFO("Reached the pickup zone");
                 reachPickup = true;
-                break;
             }
         }
-        
+      
         // Hide the marker once the robot reaches the pickup zone
         marker.action = visualization_msgs::Marker::DELETE;
-        publishMarker();
+        marker_pub.publish(marker);
         
         // Wait 5 seconds to simulate a pickup
         ros::Duration(5.0).sleep();  
@@ -103,7 +96,7 @@ public:
         // Show the marker at the drop off zone once the robot reaches it
         marker.action = visualization_msgs::Marker::ADD;
         setPose(dropoff[0], dropoff[1]);
-        publishMarker();
+        marker_pub.publish(marker);
     }
   
 private:
