@@ -5,7 +5,9 @@
 class addMarkers{
 public:
   addMarkers(){
+    //Topic to publish
     marker_pub = n.advertise<visualization_msgs::Marker>("visualization_marker", 1);
+    // Subscribe to odom topic
     odom_pub = n.subscribe("odom", 10, addmarkers::odomCallback, this);
   }
   
@@ -48,7 +50,7 @@ public:
   }
   
   void setPose(visualization_msgs::Marker& marker, double posX,double posY, double oriW) {
-    // Set the epose of the marker
+    // Set the pose of the marker
     marker.pose.position.x = poseX;
     marker.pose.position.y = poseY;
     marker.pose.orientation.w = oriW;
@@ -83,6 +85,7 @@ private:
 };
 
 int main( int argc, char** argv ){
+  // Initialize the add_maekers node
   ros::init(argc, argv, "add_markers");
   ros::Rate r(1);
 
