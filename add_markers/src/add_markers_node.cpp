@@ -44,15 +44,6 @@ public:
         marker.lifetime = ros::Duration();
         publishMarker();
     }
-  
-    void publishMarker()
-        // Sleep till a subscriber is ready and then publish the marker.
-        while (marker_pub.getNumSubscribers() < 1){
-            ROS_WARN_ONCE("Please create a subscriber to the marker");
-            sleep(1);
-        }
-        marker_pub.publish(marker);
-    }
     
     void setPose(double posX, double posY){
         // Set the pose of the marker
@@ -63,6 +54,15 @@ public:
         marker.pose.orientation.y = 0.0;
         marker.pose.orientation.z = 0.0;
         marker.pose.orientation.w = 1.0;
+    }
+    
+    void publishMarker()
+        // Sleep till a subscriber is ready and then publish the marker.
+        while (marker_pub.getNumSubscribers() < 1){
+            ROS_WARN_ONCE("Please create a subscriber to the marker");
+            sleep(1);
+        }
+        marker_pub.publish(marker);
     }
     
     void odomCallback(const nav_msgs::Odometry& odom){
@@ -88,7 +88,7 @@ public:
         
         // Hide the marker once the robot reaches the pickup zone
         marker.action = visualization_msgs::Marker::DELETE;
-        marker_pub.publish(marker);
+        publishMarker();
         
         // Wait 5 seconds to simulate a pickup
         ros::Duration(5.0).sleep();  
@@ -100,9 +100,10 @@ public:
             }
         }
         
-        setMarker();
+        // Show the marker at the drop off zone once the robot reaches it
+        marker.action = visualization_msgs::Marker::ADD;
         setPose(dropoff[0], dropoff[1]);
-        marker_pub.publish(marker);  
+        publishMarker();
     }
   
 private:
