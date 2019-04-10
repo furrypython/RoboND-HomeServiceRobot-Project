@@ -82,6 +82,7 @@ public:
             if(!reachPickup && dpx < diff && dpy < diff){
                 ROS_INFO("Reached the pickup zone");
                 reachPickup = true;
+                break;
             }
         }
         
