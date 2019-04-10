@@ -8,8 +8,15 @@ public:
     //Topic to publish
     marker_pub = n.advertise<visualization_msgs::Marker>("visualization_marker", 1);
     // Subscribe to odom topic
-    odom_pub = n.subscribe("odom", 10, addmarkers::odomCallback, this);
+    odom_pub = n.subscribe("odom", 10, addMarkers::odomCallback, this);
   }
+  
+  void setPose(visualization_msgs::Marker& marker, double posX,double posY, double oriW) {
+    // Set the pose of the marker
+    marker.pose.position.x = poseX;
+    marker.pose.position.y = poseY;
+    marker.pose.orientation.w = oriW;
+  }  
   
   void setMarker(visualization_msgs::Marker& marker){
     // Set the initial shape type to be a cube
@@ -25,6 +32,9 @@ public:
     // Set the namespace and id for this marker.
     marker.ns = "add_markers_ns";
     marker.id = 0;
+    
+    // Set the pose of the marker.
+    setPose()
 
     // Set the scale of the marker
     marker.scale.x = 0.2;
@@ -49,12 +59,7 @@ public:
     }
   }
   
-  void setPose(visualization_msgs::Marker& marker, double posX,double posY, double oriW) {
-    // Set the pose of the marker
-    marker.pose.position.x = poseX;
-    marker.pose.position.y = poseY;
-    marker.pose.orientation.w = oriW;
-  }
+
   
   void odomCallback(const nav_msgs::Odometry& odom){
     double robotPoseX = odom.pose.position.x;
@@ -80,6 +85,8 @@ private:
   ros::NodeHandle n;
   ros::Publisher marker_pub;
   ros::Subscriber odom_pub;
+  visualization_msgs::Marker marker;
+  
   bool reachPickup = false;
   bool reachDropoff = false;
 };
@@ -92,8 +99,6 @@ int main(int argc, char** argv ){
   if (!ros::ok()) {
     return 0;
   }
-
-  visualization_msgs::Marker marker;
 
   addMarkers::setMarker(marker);
   addMarkers::waitSub(marker_pub);
