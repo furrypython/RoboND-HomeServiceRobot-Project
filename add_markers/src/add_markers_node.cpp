@@ -68,23 +68,32 @@ public:
     }
   
     void odomCallback(const nav_msgs::Odometry& odom){
+        bool reachPickup = false;
+        bool reachDropoff = false;
         double robotPosX = odom.pose.position.x;
         double robotPosY = odom.pose.position.y;
-        double diff = 0.00001;
-  
-        double dpx = abs(robotPoseX - pickup.x);
-        double dpy = abs(robotPoseY - pickup.y);
+        double diff = 0.00001;  
+        double dpx = abs(robotPosX - pickup[0]);
+        double dpy = abs(robotPosY - pickup[1]);
+        double ddx = abs(robotPosX - dropoff[0]);
+        double ddy = abs(robotPosY - dropoff[1]);
+        
         if(!reachPickup && dpx < diff && dpy < diff){
             ROS_INFO("Reached the pickup zone");
             reachPickup = true;
         }
   
-        double ddx = abs(robotPoseX - dropoff.x);
-        double ddy = abs(robotPoseY - dropoff.y);
         if(!reachDropoff && ddx < diff && ddy < diff){
             ROS_INFO("Reached the dropoff zone");
             reachDropoff = true;
-        }  
+        }
+        
+        // Check if reach the pickup zone
+        while(!reachPickup){
+            ros::spin();
+            sleep(1);
+        }
+        
     }
   
 private:
@@ -94,9 +103,6 @@ private:
   visualization_msgs::Marker marker;
   double pickup[2] = {-0.488, -4.103};
   double dropoff[2] = {5.281, -2.463};
-  
-  bool reachPickup = false;
-  bool reachDropoff = false;
 };
 
 int main(int argc, char** argv ){
@@ -110,11 +116,6 @@ int main(int argc, char** argv ){
   
   marker_pub.publish(marker);
 
-  // Check if reach the pickup zone
-  while(!reachPickup){
-      ros::spin();
-      sleep(1);
-  }
   
   // Picking...
   // Pause 5 seconds
