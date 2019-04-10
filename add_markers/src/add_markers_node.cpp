@@ -9,17 +9,7 @@ public:
         marker_pub = n.advertise<visualization_msgs::Marker>("visualization_marker", 1);
         // Subscribe to odom topic
         odom_pub = n.subscribe("odom", 10, &addMarkers::odomCallback, this);
-    }
-  
-    void waitSub(){
-        // Sleep till a subscriber is ready and then publish the marker.
-        while (marker_pub.getNumSubscribers() < 1){
-            ROS_WARN_ONCE("Please create a subscriber to the marker");
-            sleep(1);
-        }
-    }
-  
-    void setMarker(){
+        
         // Set the initial shape type to be a cube
         uint32_t shape = visualization_msgs::Marker::CUBE;
 
@@ -52,6 +42,16 @@ public:
         marker.color.a = 1.0;
 
         marker.lifetime = ros::Duration();
+        publishMarker();
+    }
+  
+    void publishMarker()
+        // Sleep till a subscriber is ready and then publish the marker.
+        while (marker_pub.getNumSubscribers() < 1){
+            ROS_WARN_ONCE("Please create a subscriber to the marker");
+            sleep(1);
+        }
+        marker_pub.publish(marker);
     }
     
     void setPose(double posX, double posY){
@@ -74,7 +74,6 @@ public:
         double ddx = abs(robotPosX - dropoff[0]);
         double ddy = abs(robotPosY - dropoff[1]);
  
-        setMarker();
         setPose(pickup[0], pickup[1]);
         waitSub();
         marker_pub.publish(marker);
