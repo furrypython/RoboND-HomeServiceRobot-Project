@@ -84,7 +84,7 @@ private:
   bool reachDropoff = false;
 };
 
-int main( int argc, char** argv ){
+int main(int argc, char** argv ){
   // Initialize the add_maekers node
   ros::init(argc, argv, "add_markers");
   ros::Rate r(1);
