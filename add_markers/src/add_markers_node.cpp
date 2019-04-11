@@ -2,6 +2,8 @@
 #include <visualization_msgs/Marker.h>
 #include <nav_msgs/Odometry.h>
 
+#include <cmath> // to use abs()
+
 struct pose{
   float x;
   float y;
@@ -13,11 +15,14 @@ struct pose{
 };
 
 pose pickup = {-0.488, -4.103, 0.0, 0.0, 0.0, 1.0};
-pose dropoff = {5.281, -2.463, 0.0, 0.0, 0.0, 1.0};
+pose dropoff = {5.281, -2.463, 0.0, 0.0, 0.0, -1.0};
+
+bool reachPickup = false;
+bool reachDropoff = false;
 
 void setMarker(visualization_msgs::Marker& marker)
 {
-  // Set the initial shape type to be a cube
+  // Set our initial shape type to be a cube
   uint32_t shape = visualization_msgs::Marker::CUBE;
 
   // Set the marker type.
@@ -55,7 +60,10 @@ void waitSub(ros::Publisher& marker_pub){
 }
 
 void setPose(visualization_msgs::Marker& marker, pose& goal){
-  // Set the epose of the marker
+  // Set the marker action. 
+  marker.action = visualization_msgs::Marker::ADD;
+
+  // Set the pose of the marker
   marker.pose.position.x = goal.x;
   marker.pose.position.y = goal.y;
   marker.pose.position.z = goal.z;
@@ -65,26 +73,35 @@ void setPose(visualization_msgs::Marker& marker, pose& goal){
   marker.pose.orientation.w = goal.ow;
 }
 
-void odomCallback(){
-  bool reach = false;
-  double robotPoseX = odom.pose.position.x;
-  double robotPoseY = odom.pose.position.y;
+void odomCallback(const nav_msgs::Odometry &odom){
+  double robotPosX = odom.pose.pose.position.x;
+  double robotPosY = odom.pose.pose.position.y;
   double diff = 0.00001;
-  double dx = abs(robotPoseX - pickup.x);
-  double dy = abs(robotPoseY - pickup.y);
-  if(dx < diff && dy < diff){
-      bool reach = true;
+  double dpx = abs(robotPosX - pickup.x);
+  double dpy = abs(robotPosY - pickup.y);
+  double ddx = abs(robotPosX - dropoff.x);
+  double ddy = abs(robotPosY - dropoff.y);  
+
+  if(!reachPickup && dpx < diff && dpy < diff){
+      ROS_INFO("Robot reached the pickup zone");
+      reachPickup = true;
+  }
+
+  if(!reachDropoff && ddx < diff && ddy < diff){
+      ROS_INFO("Robot reached the dropoff zone");
+      reachDropoff = true;
   }
 }
 
-int main( int argc, char** argv ){
+int main( int argc, char** argv )
+{
   ros::init(argc, argv, "add_markers");
   ros::NodeHandle n;
-  ros::Rate r(1);
   ros::Publisher marker_pub = n.advertise<visualization_msgs::Marker>("visualization_marker", 1);
-  ros::Subscriber odom_pub = n.subscribe("odom", 10, odomCallback);
+  ros::Subscriber odom_sub = n.subscribe("odom", 1000, odomCallback);
 
-  if (!ros::ok()) {
+  if (!ros::ok())
+  {
     return 0;
   }
 
@@ -94,9 +111,14 @@ int main( int argc, char** argv ){
   waitSub(marker_pub);
 
   // Publish the marker at the pickup zone
+  ROS_INFO("Marker at the pickup zone");
   setPose(marker, pickup);
-  marker.action = visualization_msgs::Marker::ADD;
   marker_pub.publish(marker);
+
+  while(!reachPickup){
+    ros::spinOnce();
+    sleep(1);
+  }
 
   // Pause 5 seconds
   ros::Duration(5.0).sleep();
@@ -106,15 +128,18 @@ int main( int argc, char** argv ){
   marker_pub.publish(marker);
   ROS_INFO("Marker picked");
 
+  while(!reachDropoff){
+    ros::spinOnce();
+    sleep(1);
+  }
+
   // Pause 5 seconds
   ros::Duration(5.0).sleep();
 
   // Publish the marker at the dropoff zone
   setPose(marker, dropoff);
-  marker.action = visualization_msgs::Marker::ADD;
   marker_pub.publish(marker);
-
-  ROS_INFO("Marker reached the dropoff zone");
+  ROS_INFO("Marker at the dropoff zone.");
 
   return 0;
 }
