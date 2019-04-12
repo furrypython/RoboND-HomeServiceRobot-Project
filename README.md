@@ -1,7 +1,15 @@
-# RoboND-HomeServiceRobot-Project  
-This is the final project of the Robotics Software Nanodegree Program by Udacity.
+# Home Service Robot Project  
+This is the final project of Robotics Software Nanodegree Program by Udacity.
 
-## Directory structure  
+## Project Description  
+The project attempts to combine SLAM and Navigation into a robot so that it can autonomously transport an object in a Gazebo environment. By running `home_service.sh` file, the robot performs the following tasks:
+  1. Navigating to a object at the pickup zone
+  2. Picking the object.
+  3. Carrying the object to the drop off zone.
+  4. Dropping off the object to the zone.  
+  
+## Directory structure 
+ 
 ```
     ├──                                # Official ROS packages  
     |  
@@ -34,23 +42,12 @@ This is the final project of the Robotics Software Nanodegree Program by Udacity
     │   ├── ...  
     └──  
  ```
-Home Service Robot 
-This is the final project of Robotics Software Engineer Nanodegree Program by Udacity.
 
-Project Description
-The project attempts to combine SLAM and Navigation into a robot so that it can autonomously transport an object in a Gazebo environment. By running home_service.sh file, the robot performs the following tasks:
-1.	Navigating to a object at the pickup zone
-2.	Picking the object.
-3.	Carrying the object to the drop off zone.
-4.	Dropping off the object to the zone.
-
-
-
-
+## Simulation steps  
 
 
 Simulation Set Up
-This repository consists of the following packages and directories:
+
 1. Official ROS packages
 	gmapping
 	turtlebot_teleop		turtlebot_rviz_launchers
