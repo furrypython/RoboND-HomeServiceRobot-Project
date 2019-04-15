@@ -10,5 +10,15 @@ following tasks:
 3. Carrying the object to the drop off zone.  
 4. Dropping off the object to the zone.  
 
-## Simulation Set Up  
-$git -clone https://github.com/reiomori/RoboND-HomeServiceRobot-Project
+## Home Service Simulation
+``` 
+$ cd <YOUR CATKIN WORKSPACE>/src
+$ git -clone https://github.com/reiomori/RoboND-HomeServiceRobot-Project
+$ cd ..
+$ catkin_make
+$ cd src/RoboND-HomeServiceRobot-Project/scripts
+$ chmod +x home_service.sh
+$ ./home_service.sh
+```  
+
+
