@@ -9,6 +9,8 @@ following tasks:
 2. Picking the object.  
 3. Carrying the object to the drop off zone.  
 4. Dropping off the object to the zone.  
+  
+![Obect at the Pickup zone](/images/obj_at_pickup.png)
 
 ## Home Service Simulation
 ``` 
